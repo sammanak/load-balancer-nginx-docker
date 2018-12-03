@@ -1,0 +1,39 @@
+https://github.com/docker/for-win/issues/1829
+-------------------------------
+
+Version 18.03.0-ce-rc3-win56 (16433)
+Channel: edge
+b6990be
+
+version: '3'
+services:
+    docker:
+        image: docker
+        stdin_open: true
+        tty: true
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+
+-----------------------------------------------------------
+I can successfully run the command
+
+λ  docker run -v /var/run/docker.sock:/var/run/docker.sock -it docker
+
+-----------------------------------------------------------
+But when I try to use within a docker-compose.yml file I get the following error
+
+λ  docker-compose up
+Creating docker_docker_1 ... error
+
+ERROR: for docker_docker_1  Cannot create container for service docker: b'Mount denied:\nThe source path "\\\\var\\\\run\\\\docker.sock:/var/run/docker.sock"\nis not a valid Windows path'
+
+ERROR: for docker  Cannot create container for service docker: b'Mount denied:\nThe source path "\\\\var\\\\run\\\\docker.sock:/var/run/docker.sock"\nis not a valid Windows path'
+ERROR: Encountered errors while bringing up the project.
+
+************ SOLUTION for Powershell ************
+RUN Powershell As Administrator
+run $Env:COMPOSE_CONVERT_WINDOWS_PATHS=1 in PowerShell and see if it does the deference
+
+************ SOLUTION for Git Bash ************
+$ export COMPOSE_CONVERT_WINDOWS_PATHS=1
+
